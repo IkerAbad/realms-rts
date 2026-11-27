@@ -5,11 +5,11 @@
 
 #include "game/alerts.hpp"
 
-using rts::game::Alert;
-using rts::game::AlertKind;
-using rts::game::AlertParams;
-using rts::game::AlertTracker;
-using rts::sim::Snapshot;
+using reinos::game::Alert;
+using reinos::game::AlertKind;
+using reinos::game::AlertParams;
+using reinos::game::AlertTracker;
+using reinos::sim::Snapshot;
 
 namespace {
 
@@ -22,12 +22,12 @@ AlertParams params() {
     return p;
 }
 
-rts::sim::SnapshotEntity unit(std::uint32_t id, std::int32_t hp, rts::sim::PlayerId owner = 0) {
-    rts::sim::SnapshotEntity e;
+reinos::sim::SnapshotEntity unit(std::uint32_t id, std::int32_t hp, reinos::sim::PlayerId owner = 0) {
+    reinos::sim::SnapshotEntity e;
     e.id = id;
     e.hp = hp;
     e.owner = owner;
-    e.pos = {rts::sim::Fixed::from_int(10), rts::sim::Fixed::from_int(10)};
+    e.pos = {reinos::sim::Fixed::from_int(10), reinos::sim::Fixed::from_int(10)};
     return e;
 }
 
@@ -64,9 +64,9 @@ TEST_CASE("Avisos: edificio en llamas, hambre, sin comida y unidad lista; nada e
     Snapshot empty;
     Snapshot a;
     a.tick = 1;
-    rts::sim::SnapshotObject house;
+    reinos::sim::SnapshotObject house;
     house.id = 9;
-    house.kind = rts::sim::ObjectKind::Building;
+    house.kind = reinos::sim::ObjectKind::Building;
     house.owner = 0;
     house.hp = 500;
     house.complete = true;
@@ -105,4 +105,23 @@ TEST_CASE("Avisos: tropas propias que empiezan a huir; las del rival no avisan")
     Snapshot c = b;
     c.tick = 12;
     CHECK_FALSE(has(t.update(b, c, 0), AlertKind::Rout));  // sigue huyendo: no se repite
+}
+
+TEST_CASE("Avisos: tropas propias que enferman; la vida que quita la enfermedad no es un ataque") {
+    AlertTracker t(params());
+    Snapshot a;
+    a.tick = 10;
+    a.entities = {unit(1, 40), unit(2, 40, 1)};
+    Snapshot b = a;
+    b.tick = 11;
+    b.entities[0].sick = true;
+    b.entities[0].hp = 39;  // la enfermedad le quita vida
+    b.entities[1].sick = true;  // del rival: no avisa
+    const auto out = t.update(a, b, 0);
+    CHECK(out.size() == 1);
+    CHECK(has(out, AlertKind::Sickness));
+    CHECK_FALSE(has(out, AlertKind::UnderAttack));
+    Snapshot c = b;
+    c.tick = 12;
+    CHECK_FALSE(has(t.update(b, c, 0), AlertKind::Sickness));  // sigue enferma: no se repite
 }

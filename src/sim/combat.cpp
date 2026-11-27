@@ -12,7 +12,7 @@
 #include "sim/garrison.hpp"
 #include "sim/state_hash.hpp"
 
-namespace rts::sim {
+namespace reinos::sim {
 
 namespace {
 
@@ -54,6 +54,9 @@ std::int32_t CombatSystem::attack_percent(const entt::registry& registry, entt::
     }
     if (const Formation* fm = registry.try_get<Formation>(e); fm != nullptr && fm->active) {
         percent = static_cast<std::int32_t>(std::int64_t{percent} * fm->attack_percent / kPercent);  // formación
+    }
+    if (const Sickness* sk = registry.try_get<Sickness>(e); sk != nullptr && sk->sick()) {
+        percent = static_cast<std::int32_t>(std::int64_t{percent} * params_.sick_attack_percent / kPercent);  // enferma
     }
     const Supply* s = registry.try_get<Supply>(e);
     if (s == nullptr || units_[registry.get<Unit>(e).type].supply.rations <= 0 || !s->hungry()) {
@@ -898,4 +901,4 @@ void CombatSystem::hash_into(StateHasher& h, const entt::registry& registry) con
     }
 }
 
-}  // namespace rts::sim
+}  // namespace reinos::sim

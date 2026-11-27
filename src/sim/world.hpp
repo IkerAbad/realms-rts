@@ -12,6 +12,7 @@
 
 #include "sim/ai.hpp"
 #include "sim/combat.hpp"
+#include "sim/disease.hpp"
 #include "sim/economy.hpp"
 #include "sim/fire.hpp"
 #include "sim/fixed.hpp"
@@ -26,13 +27,14 @@
 #include "sim/movement.hpp"
 #include "sim/objectives.hpp"
 #include "sim/rng.hpp"
+#include "sim/season.hpp"
 #include "sim/supply.hpp"
 #include "sim/tick.hpp"
 #include "sim/tile_map.hpp"
 #include "sim/units.hpp"
 #include "sim/vision.hpp"
 
-namespace rts::sim {
+namespace reinos::sim {
 
 // Unidades de prueba sueltas (movimiento, banco): count unidades de un tipo del jugador
 // indicado, repartidas en un cuadrado de area_tiles casillas centrado en el mapa.
@@ -113,6 +115,7 @@ struct WorldParams {
     FireParams fire;
     SupplyParams supply;
     MedicineParams medicine;
+    DiseaseParams disease;  // H3: enfermedad en el real
     MoraleParams morale;
     FatigueParams fatigue;
     GarrisonParams garrison;
@@ -121,6 +124,7 @@ struct WorldParams {
     MarketParams market;
     VisionParams vision;
     ObjectiveParams objectives;
+    SeasonParams season;  // H2: estación de campaña
     AiParams ai;
     std::vector<AiSeat> ai_players;  // jugadores que controla la IA y su perfil
     SetupParams setup;
@@ -145,6 +149,7 @@ struct SnapshotEntity {
     std::int32_t rations = 0;      // víveres que lleva (máximo: SupplyStats del tipo)
     std::int32_t ammo = 0;         // munición que lleva
     bool hungry = false;           // necesita víveres y no le quedan
+    bool sick = false;             // enferma (H3, enfermedad en el real)
     Stock load{};                  // bagaje: lo que lleva
     ConvoyTask convoy = ConvoyTask::Idle;
     std::uint32_t care_post = kNoObject;  // puesto médico al que va o en el que está
@@ -220,6 +225,7 @@ struct Snapshot {
     // Niebla de guerra: luz del día (% de la vista), capa por jugador (Fog por casilla;
     // vacía si no hay niebla) y edificios enemigos recordados por cada jugador.
     std::int32_t daylight_percent = 100;
+    std::uint8_t season = kSummer;  // H2: índice de la estación (season_at)
     std::vector<std::shared_ptr<const std::vector<std::uint8_t>>> fog;
     std::vector<std::vector<RememberedBuilding>> memory;
     std::array<std::int32_t, kResourceCount> market_prices{};  // oro por lote (C3)
@@ -246,6 +252,7 @@ public:
     [[nodiscard]] const FireSystem& fire() const noexcept { return fire_; }
     [[nodiscard]] const SupplySystem& supply() const noexcept { return supply_; }
     [[nodiscard]] const MedicineSystem& medicine() const noexcept { return medicine_; }
+    [[nodiscard]] const DiseaseSystem& disease() const noexcept { return disease_; }
     [[nodiscard]] const MoraleSystem& morale() const noexcept { return morale_; }
     [[nodiscard]] const FatigueSystem& fatigue() const noexcept { return fatigue_; }
     [[nodiscard]] const GarrisonSystem& garrison() const noexcept { return garrison_; }
@@ -255,6 +262,7 @@ public:
     [[nodiscard]] const VisionSystem& vision() const noexcept { return vision_; }
     [[nodiscard]] const AiSystem& ai() const noexcept { return ai_; }
     [[nodiscard]] const ObjectiveSystem& objectives() const noexcept { return objectives_; }
+    [[nodiscard]] std::uint8_t season() const noexcept { return season_at(season_, tick_); }
     [[nodiscard]] const entt::registry& registry() const noexcept { return registry_; }
     // Solo para preparar escenarios en pruebas y herramientas: tocar el estado fuera de
     // las órdenes rompe las repeticiones.
@@ -297,6 +305,7 @@ private:
     FireSystem fire_;
     SupplySystem supply_;
     MedicineSystem medicine_;
+    DiseaseSystem disease_;
     MoraleSystem morale_;
     FatigueSystem fatigue_;
     GarrisonSystem garrison_;
@@ -306,6 +315,7 @@ private:
     VisionSystem vision_;
     AiSystem ai_;
     ObjectiveSystem objectives_;
+    SeasonParams season_;
     entt::registry registry_;
     Xoshiro256pp rng_;
     struct StartSite {
@@ -323,4 +333,4 @@ private:
     Tick tick_ = 0;
 };
 
-}  // namespace rts::sim
+}  // namespace reinos::sim

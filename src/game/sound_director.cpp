@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <unordered_map>
 
-namespace rts::game {
+namespace reinos::game {
 
 namespace {
 constexpr float kPercentF = 100.0f;
@@ -140,6 +140,7 @@ void SoundDirector::on_alert(AlertKind kind, double now_ms) {
             break;
         case AlertKind::Hunger:
         case AlertKind::NoFood:
+        case AlertKind::Sickness:
         case AlertKind::Count:
             break;
     }
@@ -215,4 +216,4 @@ std::int32_t SoundDirector::music(double now_ms) const noexcept {
     return now_ms - last_combat_ms_ < spec_->config.battle_hold_ms ? spec_->battle_music : spec_->peace_music;
 }
 
-}  // namespace rts::game
+}  // namespace reinos::game

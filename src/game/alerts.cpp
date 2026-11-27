@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <unordered_map>
 
-namespace rts::game {
+namespace reinos::game {
 
 bool AlertTracker::allow(AlertKind kind, sim::TileCoord where, sim::Tick tick) {
     const std::int32_t z = std::max(params_.zone_tiles, 1);
@@ -36,11 +36,15 @@ std::vector<Alert> AlertTracker::update(const sim::Snapshot& prev, const sim::Sn
         before.emplace(e.id, &e);
     }
     std::int32_t hungry_before = 0;
+    std::int32_t sick_before = 0;
     for (const sim::SnapshotEntity& e : prev.entities) {
         hungry_before += e.owner == me && e.hungry ? 1 : 0;
+        sick_before += e.owner == me && e.sick ? 1 : 0;
     }
     std::int32_t hungry_now = 0;
     std::optional<sim::TileCoord> hungry_at;
+    std::int32_t sick_now = 0;
+    std::optional<sim::TileCoord> sick_at;
     for (const sim::SnapshotEntity& e : curr.entities) {
         if (e.owner != me) {
             continue;
@@ -50,17 +54,24 @@ std::vector<Alert> AlertTracker::update(const sim::Snapshot& prev, const sim::Sn
             ++hungry_now;
             hungry_at = hungry_at.value_or(t);
         }
+        if (e.sick) {
+            ++sick_now;
+            sick_at = sick_at.value_or(t);
+        }
         const auto it = before.find(e.id);
         if (it == before.end()) {
             raise(AlertKind::UnitReady, t);  // nueva: recién producida
         } else if (e.routing && !it->second->routing) {
             raise(AlertKind::Rout, t);
-        } else if (e.hp < it->second->hp && !e.admitted) {
+        } else if (e.hp < it->second->hp && !e.admitted && !e.sick) {  // la enfermedad no es un ataque
             raise(AlertKind::UnderAttack, t);
         }
     }
     if (hungry_now > hungry_before && hungry_at) {
         raise(AlertKind::Hunger, *hungry_at);
+    }
+    if (sick_now > sick_before && sick_at) {
+        raise(AlertKind::Sickness, *sick_at);
     }
     for (const sim::SnapshotObject& o : curr.objects) {
         if (o.kind != sim::ObjectKind::Building || o.owner != me) {
@@ -97,4 +108,4 @@ std::vector<Alert> AlertTracker::shown(sim::Tick now) const {
     return out;
 }
 
-}  // namespace rts::game
+}  // namespace reinos::game
