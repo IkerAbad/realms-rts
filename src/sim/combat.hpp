@@ -94,6 +94,8 @@ struct CombatParams {
     std::vector<TargetClass> target_priority;
     // Una unidad hambrienta (sin víveres) ataca a este % (data: [supply]).
     std::int32_t hungry_attack_percent = 100;
+    // Una unidad enferma (H3, data: [disease]) ataca a este %.
+    std::int32_t sick_attack_percent = 100;
     TerrainCombatParams terrain;
     // Escalando un muro (B4: [climb]): el daño que recibe, a este %.
     std::int32_t climb_exposed_percent = 100;

@@ -12,6 +12,7 @@
 
 #include "sim/ai.hpp"
 #include "sim/combat.hpp"
+#include "sim/disease.hpp"
 #include "sim/economy.hpp"
 #include "sim/fire.hpp"
 #include "sim/fixed.hpp"
@@ -114,6 +115,7 @@ struct WorldParams {
     FireParams fire;
     SupplyParams supply;
     MedicineParams medicine;
+    DiseaseParams disease;  // H3: enfermedad en el real
     MoraleParams morale;
     FatigueParams fatigue;
     GarrisonParams garrison;
@@ -147,6 +149,7 @@ struct SnapshotEntity {
     std::int32_t rations = 0;      // víveres que lleva (máximo: SupplyStats del tipo)
     std::int32_t ammo = 0;         // munición que lleva
     bool hungry = false;           // necesita víveres y no le quedan
+    bool sick = false;             // enferma (H3, enfermedad en el real)
     Stock load{};                  // bagaje: lo que lleva
     ConvoyTask convoy = ConvoyTask::Idle;
     std::uint32_t care_post = kNoObject;  // puesto médico al que va o en el que está
@@ -249,6 +252,7 @@ public:
     [[nodiscard]] const FireSystem& fire() const noexcept { return fire_; }
     [[nodiscard]] const SupplySystem& supply() const noexcept { return supply_; }
     [[nodiscard]] const MedicineSystem& medicine() const noexcept { return medicine_; }
+    [[nodiscard]] const DiseaseSystem& disease() const noexcept { return disease_; }
     [[nodiscard]] const MoraleSystem& morale() const noexcept { return morale_; }
     [[nodiscard]] const FatigueSystem& fatigue() const noexcept { return fatigue_; }
     [[nodiscard]] const GarrisonSystem& garrison() const noexcept { return garrison_; }
@@ -301,6 +305,7 @@ private:
     FireSystem fire_;
     SupplySystem supply_;
     MedicineSystem medicine_;
+    DiseaseSystem disease_;
     MoraleSystem morale_;
     FatigueSystem fatigue_;
     GarrisonSystem garrison_;

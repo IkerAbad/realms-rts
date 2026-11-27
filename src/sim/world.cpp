@@ -76,6 +76,8 @@ World::World(const WorldParams& params)
       fire_(params.fire, params.unit_types, params.building_types),
       supply_(params.supply, params.unit_types, params.building_types),
       medicine_(params.medicine, params.supply.ration_cost, params.unit_types, params.building_types),
+      disease_(params.disease, params.unit_types, params.building_types, map_->width(), map_->height(),
+               player_count(params)),
       morale_(map_->width(), map_->height(), params.morale, params.unit_types, params.combat.hero_aura_radius),
       fatigue_(params.fatigue, params.unit_types),
       garrison_(params.garrison, params.unit_types, params.building_types),
@@ -502,6 +504,7 @@ void World::step() {
     economy_.update(registry_, movement_, next_order_id_, tick_);
     supply_.update(registry_, movement_, economy_, next_order_id_, tick_);
     medicine_.update(registry_, movement_, economy_, next_order_id_, tick_);
+    disease_.update(registry_, economy_, tick_);
     garrison_.update(registry_, movement_, economy_, next_order_id_, tick_);
     climb_.update(registry_, movement_, economy_, next_order_id_, tick_);
     formation_.update(registry_);
@@ -650,6 +653,7 @@ std::uint64_t World::state_hash() const {
     fire_.hash_into(h, registry_);
     supply_.hash_into(h, registry_);
     medicine_.hash_into(h, registry_);
+    disease_.hash_into(h, registry_);
     morale_.hash_into(h, registry_);
     fatigue_.hash_into(h, registry_);
     garrison_.hash_into(h, registry_);
@@ -709,6 +713,9 @@ void World::write_snapshot(Snapshot& out) const {
             s.rations = sp->rations;
             s.ammo = sp->ammo;
             s.hungry = economy_.catalog().units[unit.type].supply.rations > 0 && sp->hungry();
+        }
+        if (const Sickness* sk = registry_.try_get<Sickness>(e)) {
+            s.sick = sk->sick();
         }
         if (const Carrier* c = registry_.try_get<Carrier>(e)) {
             s.load = c->load;

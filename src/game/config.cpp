@@ -1414,6 +1414,24 @@ std::expected<EngineConfig, std::string> parse_engine_config(std::string_view to
     md.natural_heal_interval_ticks = r.get_i32("medicine.natural_heal_interval_ticks", 0, kMaxTicks);
     md.calm_ticks = r.get_i32("medicine.calm_ticks", 0, kMaxTicks);
 
+    // Enfermedad en el real (H3).
+    sim::DiseaseParams& ds = cfg.world.disease;
+    ds.enabled = r.get_bool("disease.enabled");
+    ds.check_every_ticks = r.get_i32("disease.check_every_ticks", 1, kMaxTicks);
+    ds.cell_tiles = r.get_i32("disease.cell_tiles", 1, 64);
+    ds.crowd_troops = r.get_i32("disease.crowd_troops", 1, 1000);
+    ds.sick_after_ticks = r.get_i32("disease.sick_after_ticks", 1, kMaxTicks);
+    ds.sick_spread_percent = r.get_i32("disease.sick_spread_percent", 0, 1000);
+    ds.contagion_percent = r.get_i32("disease.contagion_percent", 0, 1000);
+    ds.contagion_max_sick = r.get_i32("disease.contagion_max_sick", 0, 1000);
+    ds.care_radius_tiles = r.get_i32("disease.care_radius_tiles", 0, 256);
+    ds.care_exposure_percent = r.get_i32("disease.care_exposure_percent", 0, 100);
+    ds.illness_ticks = r.get_i32("disease.illness_ticks", 1, kMaxTicks);
+    ds.sick_hp_interval_ticks = r.get_i32("disease.sick_hp_interval_ticks", 0, kMaxTicks);
+    ds.ward_recovery_percent = r.get_i32("disease.ward_recovery_percent", 100, 1000);
+    cfg.world.combat.sick_attack_percent = r.get_i32("disease.sick_attack_percent", 0, 100);
+    cfg.world.movement.sick_speed_percent = r.get_i32("disease.sick_speed_percent", 10, 100);
+
     cfg.world.garrison.enter_reach =
         sim::Fixed::from_ratio(r.get_i32("garrison.enter_reach_milli_tiles", 0, 4 * kMilli), kMilli);
 

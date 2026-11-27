@@ -477,6 +477,40 @@ light_wound_percent = 70
 natural_heal_interval_ticks = 200
 calm_ticks = 200
 
+[disease]
+# Enfermedad en el real (H3). En las guerras de antes la disentería «en ocasiones era la
+# causante de más muertes que las que causaba la guerra en sí» (Wikipedia,
+# «Disentería»), y un ejército sitiador, «encamped in possibly squalid field
+# conditions», podía sufrir «the disease and starvation intended for the besieged»
+# (Wikipedia, «Siege»). Se contagia por «contamination of food and water with feces due
+# to poor sanitation» (Wikipedia, «Dysentery»). Regla completa en src/sim/disease.hpp.
+# Valores de diseño propios, a ajustar jugando.
+enabled = true
+# Cada segundo se mira el real: celdas de 3 x 3 casillas; con 20 tropas paradas del
+# mismo dueño o más en la celda de una tropa y las 8 de alrededor (9 x 9 casillas), se
+# expone (y sin ello, la exposición baja igual de deprisa). Medido: 30 tropas paradas
+# juntas lo pasan; una oleada de 12, no.
+check_every_ticks = 20
+cell_tiles = 3
+crowd_troops = 20
+# Enferma tras 3 min de real abarrotado, más hasta la mitad (cada unidad el suyo).
+sick_after_ticks = 3600
+sick_spread_percent = 50
+# Cada enferma de la celda, hasta 4, añade un 50 % a lo que se exponen las demás.
+contagion_percent = 50
+contagion_max_sick = 4
+# Un puesto médico propio a 8 casillas o menos (higiene, enfermeros) deja la exposición
+# en un 25 %.
+care_radius_tiles = 8
+care_exposure_percent = 25
+# Enferma 2 min: pega al 70 % y marcha al 75 %, y pierde 1 de vida cada 5 s. Ingresada
+# en un puesto médico no pierde vida y sana el doble de deprisa.
+illness_ticks = 2400
+sick_attack_percent = 70
+sick_speed_percent = 75
+sick_hp_interval_ticks = 100
+ward_recovery_percent = 200
+
 [combat]
 # Cada unidad busca blanco cada 10 ticks (0,5 s), repartidas por id.
 acquire_interval_ticks = 10

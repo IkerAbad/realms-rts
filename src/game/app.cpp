@@ -1486,6 +1486,10 @@ private:
         if (out_of_ammo(e)) {
             ImGui::TextColored(kWarnColor, "%s", T("sin munición: no puede disparar"));
         }
+        if (e.sick) {
+            ImGui::TextColored(kWarnColor, "%s",
+                               T("enferma: pega y marcha peor y pierde vida; en un puesto médico sana antes"));
+        }
     }
 
     // Mercado (C3): comprar y vender lotes por oro a los precios de ahora.
@@ -1837,6 +1841,8 @@ private:
                 return T("Unidad lista");
             case AlertKind::Rout:
                 return T("¡Tus tropas huyen!");
+            case AlertKind::Sickness:
+                return T("Enfermedad en el real");
             case AlertKind::Count:
                 break;
         }

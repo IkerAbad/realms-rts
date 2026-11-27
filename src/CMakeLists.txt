@@ -17,6 +17,7 @@ add_library(reinos_sim STATIC
     sim/fire.cpp
     sim/supply.cpp
     sim/medicine.cpp
+    sim/disease.cpp
     sim/morale.cpp
     sim/fatigue.cpp
     sim/garrison.cpp

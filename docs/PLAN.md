@@ -249,10 +249,17 @@ aprenda solo; después, lo que más pesaba en una campaña medieval y aún falta
   - la estación se elige en el menú o la fija el escenario. Fija por partida, porque un
     día de juego dura 18 min; el ciclo del año existe (`season_ticks`), apagado.
   - Pendiente para la IA: que tenga en cuenta la estación.
-- [ ] **H3. Enfermedad en el real.** Los asedios largos se perdían por disentería tanto
+- [x] **H3. Enfermedad en el real.** Los asedios largos se perdían por disentería tanto
   como por las armas: un real abarrotado, sin agua limpia ni cirujanos, enferma.
-  *Terminado cuando:* la enfermedad aparece y se contagia según hacinamiento, agua y
-  tiempo; la sanidad la frena, y lo comprueban las pruebas; con fuente.
+  *Terminado:*
+  - la enfermedad aparece según hacinamiento (20 tropas paradas en 9 × 9 casillas) y
+    tiempo (3 min o más), y se contagia;
+  - un puesto médico cerca la frena e ingresada se sana antes y sin perder vida;
+  - comprobado en `tests/test_disease.cpp`, con fuentes (Wikipedia: «Disentería»,
+    «Siege», «Dysentery»).
+  - El agua no se modela aparte: queda dentro de la higiene del real.
+  - Encendida sin cambiar los torneos ni la campaña: la IA nunca se apiña así.
+  - Pendiente: que la IA la tenga en cuenta.
 - [ ] **H4. Reinos distintos.** Castilla, Aragón, Navarra y el califato almohade, con
   tropas y costes propios sacados de fuentes (no de otros juegos). *Terminado cuando:*
   cada bando tiene sus unidades en los datos, la IA juega con cualquiera, y el torneo

@@ -100,6 +100,9 @@ Fixed MovementSystem::effective_speed(const entt::registry& registry, entt::enti
     if (march_percent_ != kPercent) {
         percent = percent * march_percent_ / kPercent;  // estación: lluvia, barro, nieve
     }
+    if (const Sickness* sk = registry.try_get<Sickness>(e); sk != nullptr && sk->sick()) {
+        percent = percent * params_.sick_speed_percent / kPercent;  // enferma
+    }
     if (percent == kPercent) {
         return unit.speed;
     }

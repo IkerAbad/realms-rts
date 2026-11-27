@@ -140,6 +140,7 @@ void SoundDirector::on_alert(AlertKind kind, double now_ms) {
             break;
         case AlertKind::Hunger:
         case AlertKind::NoFood:
+        case AlertKind::Sickness:
         case AlertKind::Count:
             break;
     }

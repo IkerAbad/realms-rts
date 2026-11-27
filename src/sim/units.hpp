@@ -161,6 +161,15 @@ struct Supply {
     [[nodiscard]] bool hungry() const noexcept { return rations <= 0; }
 };
 
+// Enfermedad en el real (H3, sim/disease.hpp). Solo la llevan las unidades expuestas.
+struct Sickness {
+    std::int32_t exposure = 0;    // ticks de real abarrotado acumulados (bajan sin él)
+    std::int32_t sick_ticks = 0;  // > 0: enferma; ticks que le quedan
+    std::int32_t hp_timer = 0;    // ticks desde la última vida perdida
+
+    [[nodiscard]] bool sick() const noexcept { return sick_ticks > 0; }
+};
+
 // Trabajo parcial repartido de forma uniforme: con percent = 50, un tick sí y otro no;
 // con 25, uno de cada cuatro. Determinista y sin estado.
 [[nodiscard]] constexpr bool works_this_tick(Tick tick, std::int32_t percent) noexcept {
@@ -350,6 +359,8 @@ struct MovementParams {
     // frente y sin pelear: a un guardia parado o a una primera línea no se la atraviesa.
     std::int32_t pass_friends_after_ticks = 0;
     std::int32_t pass_friends_ticks = 0;  // 0 = nunca
+    // Una unidad enferma (H3, data: [disease]) marcha a este %.
+    std::int32_t sick_speed_percent = 100;
 
     Fixed arrive_radius;     // casillas: a esta distancia del destino se da por llegado
     Fixed waypoint_radius;   // casillas: a esta distancia de una casilla del tramo se pasa a la siguiente

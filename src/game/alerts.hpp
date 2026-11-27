@@ -14,7 +14,7 @@
 
 namespace reinos::game {
 
-enum class AlertKind : std::uint8_t { UnderAttack, Fire, Hunger, NoFood, UnitReady, Rout, Count };
+enum class AlertKind : std::uint8_t { UnderAttack, Fire, Hunger, NoFood, UnitReady, Rout, Sickness, Count };
 
 struct Alert {
     AlertKind kind = AlertKind::UnderAttack;

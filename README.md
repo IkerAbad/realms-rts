@@ -574,6 +574,28 @@ Fuentes:
 - **Curación natural:** fuera de los puestos solo sanan solas las heridas leves (70 % de vida o más), con la unidad comida y 10 s sin recibir daño. Las graves no.
 - **IA** (módulo `sanidad` del perfil «normal», D1): con 6 tropas o más levanta un hospital de campaña junto a su base, le pone aldeanos de enfermeros hasta llenar sus plazas y forma un cirujano. Los heridos por debajo del 50 % de vida que no están peleando van a él.
 
+### Enfermedad en el real (H3)
+
+En las guerras de antes la disentería «en ocasiones era la causante de más muertes que las que causaba la guerra en sí» ([Wikipedia, «Disentería»](https://es.wikipedia.org/wiki/Disenter%C3%ADa)). Un ejército sitiador, «encamped in possibly squalid field conditions», podía sufrir «the disease and starvation intended for the besieged» ([Wikipedia, «Siege»](https://en.wikipedia.org/wiki/Siege)). Se contagia por «contamination of food and water with feces due to poor sanitation» ([Wikipedia, «Dysentery»](https://en.wikipedia.org/wiki/Dysentery)).
+
+- **El real abarrotado.** Cada segundo se miran celdas de 3 × 3 casillas. Una tropa parada se expone si en su celda y las 8 de alrededor (9 × 9 casillas) hay 20 tropas paradas de su dueño o más. Contar también las vecinas evita que el borde de una celda parta el real en trozos que no llegan.
+  - Medido: 30 tropas juntas pasan de 9 por celda; con la cuenta por celda sola no se exponía ninguna.
+  - Sin real abarrotado, por marchar o por tener sitio, la exposición baja igual de deprisa.
+- **Enfermar.** Tras 3 minutos de exposición, más hasta la mitad: cada unidad tiene su umbral, sacado de su número de entidad, así que un real no enferma entero a la vez.
+  - Cada enferma de alrededor (hasta 4) añade un 50 % a lo que se exponen las demás: contagio.
+  - Un puesto médico propio a 8 casillas o menos (higiene, enfermeros) deja la exposición en la cuarta parte.
+- **Enferma, 2 minutos.** Pega al 70 %, marcha al 75 % y pierde 1 de vida cada 5 s; puede morir. Ingresada en un puesto médico no pierde vida y sana el doble de deprisa. Se ve en el panel de la unidad, y llega un aviso, «Enfermedad en el real».
+- **Sin reales abarrotados, nada cambia.** Las unidades que nunca se exponen no llevan el componente `Sickness`: el estado y el hash son los de siempre. Encendida por omisión (`[disease] enabled`), con las mismas cifras:
+  - los hashes de los bancos no cambian, ni el de la IA de 30 minutos: la IA nunca se queda con 20 tropas paradas tan juntas;
+  - los torneos y la campaña dan lo mismo (Calatrava cae antes de que el real enferme).
+- **Medido** (`tests/test_disease.cpp`):
+  - un real de 30 parado no enferma antes de 3 minutos y entre el minuto 3 y el 5,5 enferman los 30;
+  - ni 12 parados ni 30 en marcha se exponen;
+  - con 4 enfermas en el real, 24 más enferman en 2 minutos, y sin ellas ninguna;
+  - con un puesto médico cerca nadie enferma en 5 minutos;
+  - enferma pega al 70 % y marcha al 75 %; ingresada sana en la mitad de tiempo sin perder vida.
+- **Lo que no sé:** si con estas cifras salta en partidas de personas, con un asedio largo y el real apiñado. El agua no se modela aparte (ni pozos ni ríos): cuenta como parte de la higiene del real. La IA no sabe de la enfermedad: no evita apiñarse; lleva a sus heridos a los puestos, y las enfermas acaban heridas.
+
 ### Moral y desbandada
 
 Las batallas se decidían más por la huida que por la muerte de todos: el vencido sufría casi todas sus bajas en la persecución. Cada unidad combatiente tiene una moral de 0 a 1000 que se calcula en la simulación, de forma determinista y dentro del hash (`[morale]` en `engine.toml`).

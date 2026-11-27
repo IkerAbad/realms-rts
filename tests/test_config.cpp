@@ -376,6 +376,23 @@ stops_charge = true
 [objectives]
 check_every_ticks = 10
 
+[disease]
+enabled = true
+check_every_ticks = 20
+cell_tiles = 3
+crowd_troops = 20
+sick_after_ticks = 3600
+sick_spread_percent = 50
+contagion_percent = 50
+contagion_max_sick = 4
+care_radius_tiles = 8
+care_exposure_percent = 25
+illness_ticks = 2400
+sick_attack_percent = 70
+sick_speed_percent = 75
+sick_hp_interval_ticks = 100
+ward_recovery_percent = 200
+
 [season]
 start = "verano"
 season_ticks = 0
