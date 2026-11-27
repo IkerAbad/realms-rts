@@ -258,7 +258,8 @@ aprenda solo; después, lo que más pesaba en una campaña medieval y aún falta
   - comprobado en `tests/test_disease.cpp`, con fuentes (Wikipedia: «Disentería»,
     «Siege», «Dysentery»).
   - El agua no se modela aparte: queda dentro de la higiene del real.
-  - Encendida sin cambiar los torneos ni la campaña: la IA nunca se apiña así.
+  - Encendida sin cambiar los resultados de los torneos ni la campaña: la IA casi nunca
+    se apiña así (1 partida de 120).
   - Pendiente: que la IA la tenga en cuenta.
 - [ ] **H4. Reinos distintos.** Castilla, Aragón, Navarra y el califato almohade, con
   tropas y costes propios sacados de fuentes (no de otros juegos). *Terminado cuando:*

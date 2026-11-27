@@ -586,8 +586,9 @@ En las guerras de antes la disentería «en ocasiones era la causante de más mu
   - Un puesto médico propio a 8 casillas o menos (higiene, enfermeros) deja la exposición en la cuarta parte.
 - **Enferma, 2 minutos.** Pega al 70 %, marcha al 75 % y pierde 1 de vida cada 5 s; puede morir. Ingresada en un puesto médico no pierde vida y sana el doble de deprisa. Se ve en el panel de la unidad, y llega un aviso, «Enfermedad en el real».
 - **Sin reales abarrotados, nada cambia.** Las unidades que nunca se exponen no llevan el componente `Sickness`: el estado y el hash son los de siempre. Encendida por omisión (`[disease] enabled`), con las mismas cifras:
-  - los hashes de los bancos no cambian, ni el de la IA de 30 minutos: la IA nunca se queda con 20 tropas paradas tan juntas;
-  - los torneos y la campaña dan lo mismo (Calatrava cae antes de que el real enferme).
+  - los hashes de los bancos no cambian, ni el de la IA de 30 minutos: la IA casi nunca se queda con 20 tropas paradas tan juntas;
+  - en los tres torneos de la CI (120 partidas), 119 salen idénticas a las de sin enfermedad. En la otra (experto contra difícil), al experto le enferma el real y acaba con 4705 de valor en vez de 4985, y gana igual. Los resultados de los torneos no cambian;
+  - la campaña da lo mismo (Calatrava cae antes de que el real enferme).
 - **Medido** (`tests/test_disease.cpp`):
   - un real de 30 parado no enferma antes de 3 minutos y entre el minuto 3 y el 5,5 enferman los 30;
   - ni 12 parados ni 30 en marcha se exponen;
